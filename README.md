@@ -34,7 +34,7 @@ Table of Contents
 4. Configuration
 5. Deployment
 
-Introduction
+#Introduction
 
 The Home Infrastructure Self-Hosting project aims to repurpose an older laptop into a powerful home server capable of hosting various self-hosted applications. By utilizing containerization, automation, and enhanced security measures, this setup ensures seamless operation and data protection for personal use.
 Requirements
@@ -46,7 +46,7 @@ Before getting started, ensure you have the following prerequisites:
 - Docker & Python Installed
 - Basic understanding of Linux and command-line interface
 
-Installation
+#Installation
 
 To install the Home Infrastructure Self-Hosting project:
 
@@ -54,7 +54,7 @@ Clone this repository to your Linux laptop:
     
     git clone https://github.com/kurosensama/homeserver.git
 
-Extract
+#Extract
 
 Navigate to the project directory:
 
@@ -62,7 +62,7 @@ Navigate to the project directory:
 
 Go into the folder that you want to deploy.
 
-Configuration
+#Configuration
 
 Customize the configuration files according to your specific requirements. Modify the Docker Compose file and Python scripts to add or remove services, adjust settings, and configure networking options as needed.
 Deployment
