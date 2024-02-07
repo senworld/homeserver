@@ -1,4 +1,4 @@
-![image](https://github.com/kurosensama/homeserver/assets/51825240/f2bc3d06-e04d-456f-8a9c-3d282b1a909d)# homeserver
+## homeserver
 
 Transform your old laptop into a powerful home server!
 
@@ -28,15 +28,11 @@ Home Infrastructure Self-Hosting Documentation
 Welcome to the documentation for the Home Infrastructure Self-Hosting project! This guide will walk you through setting up and configuring your own home server using an older laptop running Linux.
 Table of Contents
 
-    Introduction
-    Requirements
-    Installation
-    Configuration
-    Deployment
-    Maintenance
-    Troubleshooting
-    Contributing
-    License
+1. Introduction
+2. Requirements
+3. Installation
+4. Configuration
+5. Deployment
 
 Introduction
 
@@ -45,10 +41,10 @@ Requirements
 
 Before getting started, ensure you have the following prerequisites:
 
-    Any device running Linux
-    Internet connection
-    Docker & Python Installed
-    Basic understanding of Linux and command-line interface
+- Any device running Linux
+- Internet connection
+- Docker & Python Installed
+- Basic understanding of Linux and command-line interface
 
 Installation
 
@@ -73,9 +69,9 @@ Deployment
 
 To deploy the services on your home server:
 
-    Run the Docker Compose command to start the containers:
+Run the Docker Compose command to start the containers:
 
     docker-compose up -d
 
-    Access the self-hosted applications using your web browser and the appropriate URLs specified in the compose file.
+Access the self-hosted applications using your web browser and the appropriate URLs specified in the compose file.
 
