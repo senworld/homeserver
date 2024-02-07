@@ -172,7 +172,7 @@ services:
     environment:
       - KOMF_KOMGA_BASE_URI=192.168.2.7:25600
       - KOMF_KOMGA_USER=sen@homeserver.com
-      - KOMF_KOMGA_PASSWORD=caddsilk
+      - KOMF_KOMGA_PASSWORD= #Enter Password
       - KOMF_LOG_LEVEL=INFO
       - TZ=Asia/Kolkata # set the same timezone as your Kavita instance if you want Kavita event listener to work properly
     volumes:
