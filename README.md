@@ -47,25 +47,24 @@ Before getting started, ensure you have the following prerequisites:
 
     Any device running Linux
     Internet connection
+    Docker & Python Installed
     Basic understanding of Linux and command-line interface
 
 Installation
 
 To install the Home Infrastructure Self-Hosting project:
 
-    Clone this repository to your Linux laptop:
+Clone this repository to your Linux laptop:
+    
+    git clone https://github.com/kurosensama/homeserver.git
 
-    bash
-
-git clone https://github.com/kurosensama/homeserver
+Extract
 
 Navigate to the project directory:
 
-arduino
+    cd homeserver
 
-    cd home-infrastructure
-
-    Follow the setup instructions provided in the README file for initial setup and installation.
+Go into the folder that you want to deploy.
 
 Configuration
 
@@ -78,17 +77,5 @@ To deploy the services on your home server:
 
     docker-compose up -d
 
-    Access the self-hosted applications using your web browser and the appropriate URLs.
+    Access the self-hosted applications using your web browser and the appropriate URLs specified in the compose file.
 
-Maintenance
-
-Regularly update the project components, including Docker containers, Docker Compose files, and configuration scripts, to ensure security and compatibility with the latest software versions. Monitor system resources and performance metrics using tools like Portainer and Grafana to identify and address any issues promptly.
-Troubleshooting
-
-If you encounter any issues during setup, deployment, or operation, refer to the troubleshooting section in the README file for common problems and solutions. If the issue persists, don't hesitate to seek assistance from the project community or open a GitHub issue for support.
-Contributing
-
-Contributions to the Home Infrastructure Self-Hosting project are welcome! If you have ideas for improvements, new features, or bug fixes, please feel free to submit a pull request or open an issue on GitHub.
-License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
