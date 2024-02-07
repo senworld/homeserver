@@ -1,0 +1,77 @@
+version: "3.9"
+
+networks:
+  stack:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 192.168.1.0/24
+         gateway: 192.168.1.1
+
+services:
+  pihole:
+    depends_on: [unbound]
+    container_name: pihole
+    #network_mode: host
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "8017:80/tcp"
+    environment:
+      - TZ='Asia/Kolkata'
+    volumes:
+      - '/home/sen/.config/pihole:/etc/pihole'
+      - '/home/sen/.config/dnsmasq.d:/etc/dnsmasq.d' 
+    networks:
+      stack:
+        ipv4_address: 192.168.1.5  
+    restart: unless-stopped
+  unbound:
+    image: "mvance/unbound:latest"
+    container_name: unbound
+    ports:
+      - "5335:53/tcp"
+      - "5335:53/udp"
+    networks:
+      stack:
+        ipv4_address: 192.168.1.6
+    restart: unless-stopped
+  reverse-proxy:
+    depends_on: [pihole]
+    image: nginx
+    container_name: reverse-proxy
+    ports:
+        - 80:80
+    volumes:
+        - /home/sen/.config/nginx/:/etc/nginx/conf.d
+    networks:
+      stack:
+        ipv4_address: 192.168.1.7
+    restart: unless-stopped 
+  wireguard:
+    image: linuxserver/wireguard
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      - SERVERURL=auto #optional
+      - SERVERPORT=20430 #optional
+      - PEERS=2 #optional
+      - PEERDNS=192.168.1.5 #optional
+      - INTERNAL_SUBNET=10.13.13.0 #optional
+    volumes:
+      - ~/.config/wireguard:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - 20430:51820/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    networks:
+      stack:
+        ipv4_address: 192.168.1.8
+    restart: unless-stopped

@@ -1,0 +1,246 @@
+---
+version: "3.9"
+
+networks:
+  stack:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 192.168.2.0/24
+         gateway: 192.168.2.1
+
+services:
+  qbittorrent:
+    image: linuxserver/qbittorrent
+    container_name: qbittorrent
+    network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      - WEBUI_PORT=8080
+    volumes:
+      - ~/.config/qBittorrent:/config
+      - /mnt/Seagate_4TB:/Seagate_4TB
+      - ~/Torrent_Downloads:/Torrents_Downloads
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
+    #networks:
+    #  stack:
+    #    ipv4_address: 192.168.2.14
+    restart: unless-stopped
+  flaresolverr:
+    # DockerHub mirror flaresolverr/flaresolverr:latest
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_HTML=${LOG_HTML:-false}
+      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
+      - TZ=Asia/Kolkata
+    ports:
+      - "${PORT:-8191}:8191"
+    networks:
+      stack:
+        ipv4_address: 192.168.2.13
+    restart: unless-stopped 
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      - AUTO_UPDATE=true 
+    volumes:
+      - ~/.config/Jackett:/config
+    ports:
+      - 9117:9117
+    networks:
+      stack:
+        ipv4_address: 192.168.2.2
+    restart: unless-stopped
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - ~/.config/Radarr:/config
+      - /mnt/Seagate_4TB:/Seagate_4TB 
+    ports:
+      - 7878:7878
+    networks:
+      stack:
+        ipv4_address: 192.168.2.3
+    restart: unless-stopped
+  sonarr_anime:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr_anime
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - ~/.config/Sonarr_Anime:/config
+      - /mnt/Seagate_4TB:/Seagate_4TB
+    ports:
+      - 8989:8989
+    networks:
+      stack:
+        ipv4_address: 192.168.2.4
+    restart: unless-stopped
+  sonarr_TV:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr_TV
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - ~/.config/Sonarr_TV:/config 
+      - /mnt/Seagate_4TB:/Seagate_4TB 
+    ports:
+      - 8988:8988
+    networks:
+      stack:
+        ipv4_address: 192.168.2.5
+    restart: unless-stopped
+  # plex:
+  #   image: lscr.io/linuxserver/plex:latest
+  #   container_name: plex
+  #   network_mode: bridge
+  #   ports:
+  #     - 32400:32400
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - VERSION=docker
+  #   volumes:
+  #     - ~/.config/Plex:/config
+  #     - /mnt/Seagate_1TB/TV Shows:/TV
+  #     - /mnt/Seagate_4TB/Anime:/Anime
+  #     - /mnt/Toshiba_1TB/Movies:/Movies
+  #   restart: unless-stopped
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - ~/.config/Jellyfin:/config
+      - /mnt/Seagate_4TB:/Seagate_4TB
+    ports:
+      - 8096:8096
+    networks:
+      stack:
+        ipv4_address: 192.168.2.6
+    restart: unless-stopped
+  komga:
+    image: gotson/komga:latest
+    container_name: komga
+    volumes:
+      - ~/.config/Komga:/config
+      - /mnt/Seagate_1TB/Manga:/Manga
+    ports:
+      - 9000:25600
+    networks:
+      stack:
+        ipv4_address: 192.168.2.7
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      - KOMGA_LIBRARIES_SCAN_STARTUP=true
+      - KOMGA_LIBRARIES_SCAN_CRON=0 0 * * * ?
+      - KOMGA_SESSIONTIMEOUT=30d
+      - KOMGA_REMEMBERME_KEY=5KfaXW26YvdQMs
+      - KOMGA_REMEMBERME_VALIDITY=30d
+    restart: unless-stopped
+  komf:
+    image: sndxr/komf:latest
+    container_name: komf
+    ports:
+      - "8085:8085"
+    user: "1000:1000"
+    environment:
+      - KOMF_KOMGA_BASE_URI=192.168.2.7:25600
+      - KOMF_KOMGA_USER=sen@homeserver.com
+      - KOMF_KOMGA_PASSWORD=caddsilk
+      - KOMF_LOG_LEVEL=INFO
+      - TZ=Asia/Kolkata # set the same timezone as your Kavita instance if you want Kavita event listener to work properly
+    volumes:
+      - ~/.config/Komf:/config #path to directory with application.yml and database file
+    networks:
+       stack:
+         ipv4_address: 192.168.2.12
+    restart: unless-stopped
+  # jellyplexsync:
+  #   image: luigi311/jellyplex-watched:latest
+  #   container_name: jellyplexsync
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Asia/Kolkata
+  #   volumes:
+  #     - /home/sen/.config/JellyfinPlex-Watched/.env:/app/.env
+  #   depends_on:
+  #     - jellyfin
+  #     - plex
+  #   restart: on-failure
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - ~/.config/bazarr:/config
+      - /mnt/Seagate_1TB/TV Shows:/TV
+      - /mnt/Seagate_4TB/Anime:/Anime
+      - /mnt/Toshiba_1TB/Movies:/Movies
+    ports:
+      - 6767:6767
+    networks:
+      stack:
+        ipv4_address: 192.168.2.8
+    restart: unless-stopped
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - ~/.config/lidarr:/config
+      - /mnt/Seagate_1TB/Music:/music #optional
+      - /mnt/Seagate_4TB/Torrents:/Torrent_Downloads 
+    ports:
+      - 8686:8686
+    networks:
+      stack:
+        ipv4_address: 192.168.2.10
+    restart: unless-stopped
+  # kavita:
+  #   image: kizaing/kavita:latest    # Change latest to nightly for latest develop builds (can't go back to stable)
+  #   container_name: kavita
+  #   volumes:
+  #       - ~/.config/Kavita:/kavita/config
+  #       - /mnt/Seagate_1TB/Manga:/Manga
+  #       - /mnt/Seagate_1TB/eBooks:/eBooks
+  #   environment:
+  #       - TZ=Asia/Kolkata
+  #   ports:
+  #       - "5000:5000" # Change the public port (the first 5000) if you have conflicts with other services
+  #   networks:
+  #     stack:
+  #       ipv4_address: 192.168.2.11
+  #   restart: unless-stopped

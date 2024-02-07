@@ -1,0 +1,113 @@
+version: "3"
+
+networks:
+  stack:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 192.168.7.0/24
+         gateway: 192.168.7.1
+
+services:
+  syncthing:
+    image: lscr.io/linuxserver/syncthing:latest
+    container_name: syncthing
+    hostname: syncthing #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - ~/.config/syncthing:/config
+      - ~/.:/home_dir
+      - /mnt/Seagate_1TB:/Seagate_1TB
+      - ~/.wg:/.wg
+    ports:
+      - 8384:8384
+      - 22000:22000/tcp
+      - 22000:22000/udp
+      - 21027:21027/udp
+    networks:
+      stack:
+        ipv4_address: 192.168.7.2
+    restart: unless-stopped
+  ispyagentdvr:
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    ports:
+      - 8090:8090
+      - 3478:3478/udp
+      - 50000-50010:50000-50010/udp
+    volumes:
+      - ~/.config/ispyagentdvr:/agent/Media/XML
+      - /mnt/Seagate_1TB/CCTV:/agent/Media/WebServerRoot/Media
+      - ~/.config/ispyagentdvr/Commands:/agent/Commands
+    container_name: ispyagentdvr
+    networks:
+      stack:
+        ipv4_address: 192.168.7.3
+    image: 'doitandbedone/ispyagentdvr:latest'
+    restart: unless-stopped
+
+  # mariadb_nextcloud:
+  #   image: mariadb:10.5
+  #   container_name: mariadb_nextcloud
+  #   restart: always
+  #   command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+  #   volumes:
+  #     - ~/.config/mariadb_nextcloud:/var/lib/mysql
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=1234
+  #     - MYSQL_PASSWORD=1234
+  #     - MYSQL_DATABASE=nextcloud
+  #     - MYSQL_USER=nextcloud
+  #   networks:
+  #     stack:
+  #       ipv4_address: 192.168.7.4
+
+  # nextcloud:
+  #   image: nextcloud
+  #   container_name: nextcloud
+  #   restart: always
+  #   ports:
+  #     - 84:80
+  #   links:
+  #     - mariadb_nextcloud
+  #   volumes:
+  #     - ~/.config/nextcloud:/var/www/html
+  #   environment:
+  #     - MYSQL_PASSWORD=1234
+  #     - MYSQL_DATABASE=nextcloud
+  #     - MYSQL_USER=nextcloud
+  #     - MYSQL_HOST=mariadb_nextcloud
+  #   networks:
+  #     stack:
+  #       ipv4_address: 192.168.7.5
+
+  # collabora:
+  #   image: collabora/code
+  #   container_name: collabora
+  #   restart: always
+  #   ports:
+  #     - "8081:9980"
+  #   environment:
+  #     - "extra_params=--o:ssl.enable=false"
+  #   networks:
+  #     stack:
+  #       ipv4_address: 192.168.7.6
+
+  # searx:
+  #   image: searx/searx
+  #   container_name: searx
+  #   environment:
+  #     - BIND_ADDRESS=0.0.0.0:8080
+  #   ports:
+  #     - "8888:8080"
+  #   volumes:
+  #     - ~/.config/searx/:/etc/searx/
+  #   restart: always
+  #   networks:
+  #     stack:
+  #       ipv4_address: 192.168.7.7
