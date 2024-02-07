@@ -71,7 +71,7 @@ To deploy the services on your home server:
 
 Run the Docker Compose command to start the containers:
 
-    docker-compose up -d
+    docker compose up -d
 
 Access the self-hosted applications using your web browser and the appropriate URLs specified in the compose file.
 
