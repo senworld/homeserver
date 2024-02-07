@@ -23,7 +23,6 @@ To set up your own home infrastructure using this project:
 4. **Deployment**: Deploy the services using Docker Compose and start enjoying your self-hosted applications!
 
 ## Documentation
-Homeserver Documentation
 
 Welcome to the documentation for the Home Infrastructure Self-Hosting project! This guide will walk you through setting up and configuring your own home server using an older laptop running Linux.
 Table of Contents
